@@ -6,7 +6,7 @@ import com.edu.ulab.app.dto.BookDto;
 public interface BookService {
     BookDto createBook(BookDto userDto);
 
-    BookDto updateBook(BookDto userDto);
+    BookDto updateBook(BookDto userDto) throws Throwable;
 
     BookDto getBookById(Long id);
 

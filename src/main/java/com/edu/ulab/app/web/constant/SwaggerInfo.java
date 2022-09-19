@@ -7,9 +7,13 @@ public class SwaggerInfo {
     /**
      * Название API.
      */
-    public final String TITLE = "Service";
+    public final String TITLE = "Book row service";
     /**
      * Описание API.
      */
-    public final String DESCRIPTION = "Сервис";
+    public final String DESCRIPTION = "This service allows to create users and store theirs books";
+
+    public final String NAME = "Sergey";
+    public final String EMAIL = "smirnovsilent@gmail.com";
+
 }

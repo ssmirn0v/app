@@ -2,6 +2,7 @@ package com.edu.ulab.app.config;
 
 import com.edu.ulab.app.web.constant.SwaggerInfo;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,8 @@ public class SwaggerConfig {
                 .title(SwaggerInfo.TITLE)
                 .description(SwaggerInfo.DESCRIPTION)
                 .version(swaggerApiVersion)
+                .contact(new Contact().name(SwaggerInfo.NAME)
+                        .email(SwaggerInfo.EMAIL))
         );
     }
 }
