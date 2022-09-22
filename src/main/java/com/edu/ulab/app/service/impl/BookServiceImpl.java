@@ -23,17 +23,19 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto createBook(BookDto bookDto) {
-        BookE bookE = new BookE(bookDto.getUserId(), bookDto.getTitle(), bookDto.getAuthor());
-        setIfNotNull(bookDto.getPageCount(), bookE::setPageCount);
+        BookE bookE = bookMapper.createBookEFromBookDto(bookDto);
         bookRepository.save(bookE);
-        bookDto.setId(bookE.getId());
-        return bookDto;
+        BookDto bookDtoCreated = bookMapper.bookEToBookDto(bookE);
+        return bookDtoCreated;
     }
 
     @Override
     public BookDto updateBook(BookDto bookDto) throws Throwable {
-        BookE bookE = bookMapper.bookDtoToBookE(bookDto);
-        BookDto bookDtoChanged = bookMapper.bookEToBookDto(bookRepository.update(bookE));
+        Long id = bookDto.getId();
+        BookE bookEForUpdate = bookRepository.getById(id)
+                .orElseThrow(() -> new NotFoundException("Book with id: " + id + " was not found"));
+        bookMapper.updateBookEFromBookDto(bookDto, bookEForUpdate);
+        BookDto bookDtoChanged = bookMapper.bookEToBookDto(bookEForUpdate);
         return bookDtoChanged;
     }
 

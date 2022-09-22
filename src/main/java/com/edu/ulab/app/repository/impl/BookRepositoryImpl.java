@@ -29,17 +29,6 @@ public class BookRepositoryImpl implements BookRepository {
         return storage.get(id);
     }
 
-    @Override
-    public BookE update(BookE bookE) {
-        Long id = bookE.getId();
-        BookE oldBookE = storage.get(id)
-                .orElseThrow(() -> new NotFoundException("Book with id: " + id + " was not found"));
-
-        setIfNotNull(bookE.getAuthor(), oldBookE::setAuthor);
-        setIfNotNull(bookE.getTitle(), oldBookE::setTitle);
-        setIfNotNull(bookE.getPageCount(), oldBookE::setPageCount);
-        return oldBookE;
-    }
 
     @Override
     public void deleteById(Long id) {

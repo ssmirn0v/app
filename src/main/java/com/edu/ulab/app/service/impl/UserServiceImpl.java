@@ -1,6 +1,9 @@
 package com.edu.ulab.app.service.impl;
 
+import com.edu.ulab.app.dto.BookDto;
 import com.edu.ulab.app.dto.UserDto;
+import com.edu.ulab.app.entity.BookE;
+import com.edu.ulab.app.entity.UserBookE;
 import com.edu.ulab.app.entity.UserE;
 import com.edu.ulab.app.exception.NotFoundException;
 import com.edu.ulab.app.mapper.UserMapper;
@@ -11,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -29,16 +33,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        UserE user = new UserE(userDto.getFullName(), userDto.getTitle(), userDto.getAge());
+        UserE user = userMapper.createUserEFromUserDto(userDto);
         userRepository.save(user);
-        userDto.setId(user.getId());
-        return userDto;
+        UserDto userDtoCreated = userMapper.userEToUserDto(user);
+        return userDtoCreated;
     }
 
     @Override
     public UserDto updateUser(UserDto userDto) throws Throwable {
-        UserE userE = userMapper.userDtoToUserE(userDto);
-        UserDto userDtoChanged = userMapper.userEToUserDto(userRepository.update(userE));
+        Long id = userDto.getId();
+        UserE userEForUpdate = userRepository.getById(id)
+                .orElseThrow(() -> new NotFoundException("User with id: " + id + " was not found"));
+        userMapper.updateUserEFromUserDto(userDto, userEForUpdate);
+        UserDto userDtoChanged = userMapper.userEToUserDto(userEForUpdate);
         return userDtoChanged;
     }
 
@@ -55,7 +62,11 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id: " + userId + " was not found");
         }
-        userBookRepository.addAllBooksToUserId(userId, booksIds);
+
+        UserBookE userBookE = userBookRepository.getUserBookE(userId)
+                .orElse(new UserBookE(userId));
+        userBookE.getBooksIds().addAll(booksIds);
+        userBookRepository.save(userBookE);
     }
 
     @Override
@@ -63,7 +74,10 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User with id: " + userId + " was not found");
         }
-        return userBookRepository.getBooksIdsByUserId(userId);
+        Set<Long> userBooksIds = userBookRepository.getUserBookE(userId)
+                .map(UserBookE::getBooksIds)
+                .orElse(null);
+        return userBooksIds;
     }
 
 

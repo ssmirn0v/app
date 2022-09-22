@@ -10,7 +10,6 @@ public interface UserRepository {
 
     Optional<UserE> getById(Long id);
 
-    UserE update(UserE user) throws Throwable;
 
     void deleteById(Long id);
 

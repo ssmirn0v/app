@@ -1,17 +1,17 @@
 package com.edu.ulab.app.repository;
 
+import com.edu.ulab.app.entity.UserBookE;
+
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 public interface UserBookRepository {
 
-    Set<Long> getBooksIdsByUserId(Long id);
-
     void deleteAllBooksByUserId(Long id);
 
-    void deleteUserBook(Long userId, Long bookId);
 
-    void addAllBooksToUserId(Long userId, Collection<Long> booksIds);
+    Optional<UserBookE> getUserBookE(Long id);
 
-    void addBookToUserId(Long userId, Long bookId);
+    public void save(UserBookE userBookE);
 }

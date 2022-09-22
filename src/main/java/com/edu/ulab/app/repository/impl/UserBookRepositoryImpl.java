@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -20,12 +21,6 @@ public class UserBookRepositoryImpl implements UserBookRepository {
     }
 
 
-    @Override
-    public Set<Long> getBooksIdsByUserId(Long id) {
-        UserBookE userBookE = storage.get(id)
-                .orElseThrow(() -> new NotFoundException("UserBook entity with id: " + id + " was not found"));
-        return userBookE.getBooksIds();
-    }
 
     @Override
     public void deleteAllBooksByUserId(Long id) {
@@ -33,29 +28,14 @@ public class UserBookRepositoryImpl implements UserBookRepository {
     }
 
     @Override
-    public void deleteUserBook(Long userId, Long bookId) {
-        UserBookE userBookE = storage.get(userId)
-                .orElseThrow(() -> new NotFoundException("UserBook entity with id: " + userId + " was not found"));
-        userBookE.getBooksIds().remove(bookId);
+    public Optional<UserBookE> getUserBookE(Long id) {
+        return storage.get(id);
     }
 
-    @Override
-    public void addAllBooksToUserId(Long userId, Collection<Long> booksIds) {
-        if (storage.existsById(userId)) {
-            UserBookE userBookE = storage.get(userId)
-                    .orElseThrow(() -> new NotFoundException("UserBook entity with id: " + userId + " was not found"));
-            userBookE.getBooksIds().addAll(booksIds);
-        } else {
-            UserBookE userBookE = new UserBookE(userId);
-            userBookE.setBooksIds(new HashSet<>(booksIds));
-            storage.save(userBookE);
-        }
-    }
+
 
     @Override
-    public void addBookToUserId(Long userId, Long bookId) {
-        UserBookE userBookE = storage.get(userId)
-                .orElseThrow(() -> new NotFoundException("UserBook entity with id: " + userId + " was not found"));
-        userBookE.getBooksIds().add(bookId);
+    public void save(UserBookE userBookE) {
+        storage.save(userBookE);
     }
 }

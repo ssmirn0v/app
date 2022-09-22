@@ -10,7 +10,6 @@ public interface BookRepository {
 
     Optional<BookE> getById(Long id);
 
-    BookE update(BookE bookE) throws Throwable;
 
     void deleteById(Long id);
 }

@@ -29,17 +29,6 @@ public class UserRepositoryImpl implements UserRepository {
         return storage.get(id);
     }
 
-    @Override
-    public UserE update(UserE user) {
-        Long id = user.getId();
-        UserE oldUser = storage.get(id)
-                .orElseThrow(() -> new NotFoundException("User with id: " + id + " was not found"));
-        setIfNotNull(user.getFullName(), oldUser::setFullName);
-        setIfNotNull(user.getTitle(), oldUser::setTitle);
-        setIfNotNull(user.getAge(), oldUser::setAge);
-        return oldUser;
-
-    }
 
     @Override
     public void deleteById(Long id) {

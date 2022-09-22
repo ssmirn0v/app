@@ -2,6 +2,7 @@ package com.edu.ulab.app.facade;
 
 import com.edu.ulab.app.dto.BookDto;
 import com.edu.ulab.app.dto.UserDto;
+import com.edu.ulab.app.exception.UserNotReaderException;
 import com.edu.ulab.app.mapper.BookMapper;
 import com.edu.ulab.app.mapper.UserMapper;
 import com.edu.ulab.app.service.BookService;
@@ -23,6 +24,8 @@ import java.util.stream.Stream;
 @Slf4j
 @Component
 public class UserDataFacade {
+    private static String READER = "reader";
+
     private final UserService userService;
     private final BookService bookService;
     private final UserMapper userMapper;
@@ -42,6 +45,10 @@ public class UserDataFacade {
         log.info("Got user book create request: {}", userBookRequest);
         UserDto userDto = userMapper.userRequestToUserDto(userBookRequest.getUserRequest());
         log.info("Mapped user request: {}", userDto);
+
+        if (checkIfUserIsNotReader(userDto)) {
+            throw new UserNotReaderException("User did not specified that he is a reader in Title field");
+        }
 
         UserDto createdUser = userService.createUser(userDto);
         log.info("Created user: {}", createdUser);
@@ -99,6 +106,11 @@ public class UserDataFacade {
         userService.deleteUserById(userId);
 
         log.debug("RequestId: {}, deleted user with id: {}", MDC.get("RequestId"), userId);
+    }
+
+    // функция чтобы привести пример создания и обработки своего исключения
+    private boolean checkIfUserIsNotReader(UserDto userDto) {
+        return !READER.equalsIgnoreCase(userDto.getTitle());
     }
 
     private List<Long> addBooks(Long userId, List<BookRequest> bookRequests) {

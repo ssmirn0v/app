@@ -47,4 +47,6 @@ public class StorageHashMap<T extends HavingId> implements Storage {
     }
 
 
+
+
 }

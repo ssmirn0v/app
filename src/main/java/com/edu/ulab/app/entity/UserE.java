@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @Data
 public class UserE implements HavingId {
     private static AtomicLong idCounter = new AtomicLong(0);
-
     private Long id;
     @NonNull
     private String fullName;
