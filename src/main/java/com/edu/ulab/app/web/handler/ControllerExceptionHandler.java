@@ -1,6 +1,7 @@
 package com.edu.ulab.app.web.handler;
 
 import com.edu.ulab.app.exception.NotFoundException;
+import com.edu.ulab.app.exception.UserNotReaderException;
 import com.edu.ulab.app.web.response.BaseWebResponse;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,13 @@ public class ControllerExceptionHandler {
     public ResponseEntity<BaseWebResponse> handleNotFoundExceptionException(@NonNull final NotFoundException exc) {
         log.error(exc.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new BaseWebResponse(createErrorMessage(exc)));
+    }
+
+    @ExceptionHandler(UserNotReaderException.class)
+    public ResponseEntity<BaseWebResponse> handleUserNotReaderException(@NonNull final UserNotReaderException exc) {
+        log.error(exc.getMessage());
+        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
                 .body(new BaseWebResponse(createErrorMessage(exc)));
     }
 
